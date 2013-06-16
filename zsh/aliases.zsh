@@ -140,8 +140,6 @@ alias gcl='git clone'
 alias gta='git tag -a -m'
 alias gf='git reflog'
 alias gv='git log --pretty=format:'%s' | cut -d " " -f 1 | sort | uniq -c | sort -nr'
-alias gdb='git diff master..`git rev-parse --abbrev-ref HEAD`'
-alias gr='git diff master..'
 
 # leverage aliases from ~/.gitconfig
 alias gh='git hist'
@@ -169,8 +167,6 @@ alias 'adventure=emacs -batch -l dunnet' # play adventure in the console
 alias 'ttop=top -ocpu -R -F -s 2 -n30' # fancy top
 alias 'rm=rm -i' # make rm command (potentially) less destructive
 
-# Force tmux to use 256 colors
-alias tmux='TERM=screen-256color-bce tmux'
 
 # fakecall.net
 #alias fakecall='curl --request POST --user "7852368181:ghoti" http://api.fakecall.net/v1/account/7852368181/call'
