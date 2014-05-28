@@ -15,7 +15,7 @@ source ~/.zsh/zsh_hooks.zsh
 export ARCHFLAGS="-arch x86_64"
 
 # Customize to your needs...
-export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/npm/bin
 export EDITOR="/usr/local/bin/mate -w"
 
 # Location of your virtualenv files
