@@ -1,9 +1,11 @@
 This repository holds my configuration files so that I can clone them to other machines
 easily.
 
+My primary OS is OS X (10.9.x) and some of these configurations are tuned to work on that platform. The `bash` files are more generic and friendly toward other Unix-based operating systems. 
+
 #Installation
 
-    git clone git://github.com/zan5hin/dotfiles.git ~/.dotfiles
+    git clone git://github.com/zanshin/dotfiles.git ~/.dotfiles
 	
 # Updating
 There are several git submodules included in this configuration. On a new
@@ -17,6 +19,10 @@ It is also possible to use `git pull` to update the submodules.
 
     $ cd ~/.dotfiles
     $ git submodule foreach git pull origin master
+
+Vundle managed Vim bundles maybe updated from the command line via
+
+    $ vim +BundleInstall +qall
 
 #Setup
 ## Homebrew
@@ -32,11 +38,15 @@ On those Mac OS machines where I install Homebrew I also edit `/etc/paths` to mo
 For zsh configuration create the following symlinks:
 
     ln -s ~/.dotfiles/zsh ~/.zsh
-	ln -s ~/.dotfiles/zsh/zshrc ~/.zshrc
+    ln -s ~/.dotfiles/zsh/zshrc ~/.zshrc
     ln -s ~/.dotfiles/zsh/zshenv ~/.zshenv
     ln -s ~/.dotfiles/zsh/zprofile ~/.zprofile
 		
-	
+## ssh
+For ssh configuration, create the following symlink:
+
+    ln -s ~/.dotfiles/ssh/config ~/.ssh/config
+
 ## Vim
 For Vim configuration and use, create the following symlinks:
 
@@ -44,9 +54,17 @@ For Vim configuration and use, create the following symlinks:
     ln -s ~/.dotfiles/vim/vimrc ~/.vimrc
     ln -s ~/.dotfiles/vim/gvimrc ~/.gvimrc
 
-Vim's backup and swap files are stored in `~/.tmp`, so that directory must exist. To be sure run:
+To install Vim bundles, which are managed via Vundle, via the command line run
 
-    $ touch ~/.tmp
+    vim +BundleInstall +qall
+
+From inside of Vim run
+
+    :BundleInstall
+
+If this is the first time setting up Vim on the machine, it will be necessary to install Vundle itself, prior to teh bundles.
+
+    git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
 ## bash
 For those machines where zsh isn't installed or won't easily work, create the
@@ -72,7 +90,11 @@ For Mercurial configuration and global ignore files, create these symlinks:
 
     $ ln -s ~/.dotfiles/hg/hgrc ~/.hgrc
     $ ln -s ~/.dotfiles/hg/hgignore_global ~/.hgignore_global
-	
+
+## Gem
+In order to prevent `gem install` or `gem update` from downloading RDoc and RI, symlink this file.
+
+    $ ln -s ~/.dotfiles/gem/gemrc ~/.gemrc
 
 ## TextMate (mate)
 For TextMate 2 settings create the following symlink:
@@ -83,10 +105,6 @@ For TextMate 2 settings create the following symlink:
 For tmux configuration create this symlink:
 
     $ ln -s ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
-
-My tmux setup also uses tmux-powerline for the status bar. Add the tmux-powerlinerc to the home directory.
-
-    $ ln -s ~/.dotfiles/tmux/tmux-powerlinerc ~/.tmux-powerlinerc
 
 ## Sublime Text 2 (subl)
 Install Package Control following the instructions here: http://wbond.net/sublime_packages/package_control
@@ -106,5 +124,15 @@ To enable z directory function from https://github.com/rupa/z, source the
 `z.sh` script in the `.zshrc` file: 
 
     source ${HOME}/.dotfiles/z/z.sh
-	
+
+## Doing
+Install `doing` gem (https://github.com/ttscoff/doing/ & http://brettterpstra.com/2014/03/15/scatterbrains-3-a-new-tool-for-doing/)
+
+    $ [sudo] gem install doing
+
+Create symlink to `doingrc` file.
+
+    $ ln -s ~/.dotfiles/doing/doingrc ~/.doingrc
+
+
 

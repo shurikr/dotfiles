@@ -1,307 +1,404 @@
 " .vimrc
-" Author: Mark Nichols
-" largely copied from Steve Losh (stevelosh.com)
-" addition bits borrowed from https://github.com/nvie/vimrc/blob/master/vimrc
-" further bits from http://vimcasts.org
-" also, https://github.com/lukaszkorecki/DOtFiles
-" and from: http://www.drbunsen.org/text-triumvirate.html
+" Maintained by: Mark Nichols
+" mark@zanshin.net
+" http;//zanshin.net
 "
-" ---------------------------------------------------------------------------------
-" use Vim settings rather than vi settings (must be first)
-" ---------------------------------------------------------------------------------
+" -------------------------------------------------------------------
+" Forget compatibility with vi. Who cares.
+" -------------------------------------------------------------------
 set nocompatible
 
-" ---------------------------------------------------------------------------------
-" setup Pathogen to manage plugins
-" ---------------------------------------------------------------------------------
-filetype on                   " best to have it on before turning it off
-filetype off                  " force reloading after pathogen loaded
-call pathogen#infect()
-call pathogen#helptags()
-filetype plugin indent on     " enable plugins, detection and indenting in one step
+" -------------------------------------------------------------------
+" Get SID prefix of vimrc (see :h <SID>)
+" -------------------------------------------------------------------
+function! s:SID_PREFIX()
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+endfunction
 
-" ---------------------------------------------------------------------------------
-" change mapleader from \ to ,
-" ---------------------------------------------------------------------------------
-let mapleader=','
+" -------------------------------------------------------------------
+" setup Vundle to manage plugins
+" -------------------------------------------------------------------
+" turn filetype on so that we can turn if off without generating an exit code
+" of 1 when quiting vim.
+filetype on                     " best to have it on before turning it off
+filetype off                    " needs to be off to setup Vundle
+set rtp+=~/.vim/bundle/vundle/  " add vundle to run time path
+call vundle#rc()
 
-" ---------------------------------------------------------------------------------
-" basic options
-" ---------------------------------------------------------------------------------
-set encoding=utf-8
-set modelines=0
-set tabstop=4                   " a tab stop is 4 spaces
-set shiftwidth=4                " number of spaces to use for autoindenting
-set softtabstop=4               " when <BS>, pretend a tab is removed, even if spaces
-set expandtab                   " expand tabs to spaces (overloadable by file type later)
-set scrolloff=3                 " keep 3 lines off the edges of the screen when scrolling
-set autoindent                  " always set autoindenting on
-set showmode                    " always show what mode we're in
-set showcmd                     " display info about current command in status lin
-set hidden
-set wildmenu                    " navigate <Left> & <Right> through completion lists
-set wildmode=list:longest       " allows expansion of wildmenu
-set visualbell                  " visual bell
-set cursorline                  " highlight the line containing the cursor
-set ttyfast                     " improves redrawing
-set ruler                       " show row,col in status area
-set backspace=indent,eol,start  " allow backspacing over everything in insert mode
-set history=1000
-"if version >= 730
-"    set undodir=~/.tmp/undodir      " set undo file location
-"    set undofile
-"endif
+" let Vundle manage Vundle
+Bundle 'gmarik/vundle'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'git://github.com/sjl/badwolf.git'
+" Bundle 'scrooloose/nerdtree'
+Bundle 'kien/ctrlp.vim'
+Bundle 'tpope/vim-fugitive'
+Bundle 'bling/vim-airline'
+Bundle 'benmills/vimux'
+Bundle 'git://git.wincent.com/command-t.git'
+Bundle 'plasticboy/vim-markdown'
+" Bundle 'fholgado/minibufexpl.vim'
+" vim-snipmate requires vim-addon-mw-utils and tlib_vim
+Bundle "MarcWeber/vim-addon-mw-utils"
+Bundle "tomtom/tlib_vim"
+Bundle "garbas/vim-snipmate"
+" Some snippets to get started
+Bundle "honza/vim-snippets"
 
-" ---------------------------------------------------------------------------------
-" backups
-" ---------------------------------------------------------------------------------
-set backup
-set noswapfile
-
-set undodir=~/.tmp/undo/       " undo files
-set backupdir=~/.tmp/backup/   " backups
-set directory=~/.tmp/swap/     " swap files
-
-" make those directories automatically if they don't already exist
-if !isdirectory(expand(&undodir))
-    call mkdir(expand(&undodir), "p")
-endif
-if !isdirectory(expand(&backupdir))
-    call mkdir(expand(&backupdir), "p")
-endif
-if !isdirectory(expand(&directory))
-    call mkdir(expand(&directory), "p")
+if has('autocmd')
+  filetype plugin indent on    " enable plugins, detection and indenting
 endif
 
-set ffs=unix,mac,dos            " default file types
-set spell                       " turn spell check on
-set autoread                    " automatically updates file when editted outside vim
-
-" use relative (offset) line number only in active window split
-if v:version >= 703
-    set relativenumber
-    :au WinEnter * :setlocal relativenumber
-    :au WinLeave * :setlocal nonumber
-else
-    set number
-    :au WinEnter * :setlocal number
-    :au WinLeave * :setlocal nonumber
+if has('syntax') && !exists('g:syntax_on')
+  syntax on
 endif
 
+" -------------------------------------------------------------------
+"  change map <leader> from \ to ,
+"  ------------------------------------------------------------------
+:let mapleader = ","
 
-" automatically resize vertical splits to maximize current split
-:au WinEnter * :set winfixheight
-:au WinEnter * :wincmd =
+" -------------------------------------------------------------------
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+" -------------------------------------------------------------------
+cmap w!! w !sudo tee > /dev/null %
 
-" ---------------------------------------------------------------------------------
-" Editor layout
-" ---------------------------------------------------------------------------------
-set termencoding=utf-8
-set encoding=utf-8
-set lazyredraw                  " don't update the display while executing macros
-set laststatus=2                " tell Vim to always put a status line in,
-                                "   even if there is only one window
-set cmdheight=2                 " ues a status bar that is two rows high
+" -------------------------------------------------------------------
+" time out mappings after 1 second (1000) 
+" and key codes after 1/2 a second (500)
+" -------------------------------------------------------------------
+set timeout timeoutlen=1000 ttimeoutlen=500
 
-" ---------------------------------------------------------------------------------
-" Set up the solarized color scheme - not as easy as it ought to be
-" need `syntax on` for colors to work properly
-" ---------------------------------------------------------------------------------
-syntax on
-set background=dark
-" let g:solarized_termcolors=256
-let g:solarized_termtrans = 1
-" let g:solarized_visibility = "high"
-" let g:solarized_contrast = "high"
-colorscheme solarized
-
-
-" set options based on whether we're in the GUI or terminal
-" Mostly we're hiding the toolbar in MacVim
-
-if has("gui_running")
-    set guioptions=egmrt
-    set guioptions-=T
-    set showtabline=2           " always show tabbar in gui
-endif
-
-" Fonts
-set gfn=Inconsolata:h11
-set shell=/bin/zsh
-
-" ---------------------------------------------------------------------------------
-" moving and searching
-" ---------------------------------------------------------------------------------
-nnoremap / /\v
-vnoremap / /\v
-set ignorecase                  " ignore case while searching
-set smartcase                   " ignore case if search string is all lower case
-                                "    case-sensitive otherwise
-set gdefault                    " search/replace globally (on a line) by default
-set incsearch                   " allow search matches as you type
-set showmatch                   " set show matching parens
-set hlsearch                    " highlight search terms
-nnoremap <leader><space> :noh<cr>
-nnoremap <tab> %
-vnoremap <tab> %
-
-" Next or previous bufffer and next or previous tab movement keys
-map <C-J> :bnext<CR>            " next buffer
-map <C-K> :bprev<CR>            " previous buffer
-map <C-H> :tabn<CR>             " next tab
-map <C-L> :tabp<CR>             " previous tab
-
-" ---------------------------------------------------------------------------------
-" working with OS X Clipboard
-" ---------------------------------------------------------------------------------
-" Yank text to the OS X clipboard
-noremap <leader>y "*y
-noremap <leader>yy "*Y
-
-" Preserve indentation while pasting text from the OS X clipboard
-noremap <leader>p :set paste<CR>:put  *<CR>:set nopaste<CR>
-
-" ---------------------------------------------------------------------------------
-" handle long lines
-" ---------------------------------------------------------------------------------
-set wrap
-set textwidth=79
-set formatoptions=qrn1
-if version >= 703
-    set colorcolumn=85
-endif
-
-" command to Wrap long lines. Sets wrap, linebreak, and nolist
-command! -nargs=* Wrap set wrap linebreak nolist
-
-" show invisible characters ala TextMate
-set list
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
-
-" ---------------------------------------------------------------------------------
-" add TextMate indentation key mappings
-" from vimcasts,org #5
-" altered to be non-recursive
-" ---------------------------------------------------------------------------------
-nnoremap <D-[> <<
-nnoremap <D-]> >>
-nnoremap <D-[> <gv
-nnoremap <d-]> >gv
-
-" ---------------------------------------------------------------------------------
-" force hjkl movement keys. painful but essential
-" ---------------------------------------------------------------------------------
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-nnoremap <left> <nop>
-nnoremap <right> <nop>
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <right> <nop>
-inoremap <left> <nop>
-nnoremap j gj
-nnoremap k gk
-
-" remap the help key
-" inoremap <F1> <ESC>
-" nnoremap <F1> <ESC>
-" vnoremap <F1> <ESC>
-"
-" ---------------------------------------------------------------------------------
-" remap ; to :, save a keystroke
-" ---------------------------------------------------------------------------------
+" -------------------------------------------------------------------
+" Trying to break a very old habit...
+" ex mode commands made easy
+" -------------------------------------------------------------------
 nnoremap ; :
+nnoremap Q <nop>
 
-" ---------------------------------------------------------------------------------
-" save on losing focus
-" ---------------------------------------------------------------------------------
-au FocusLost * :wa
+" -------------------------------------------------------------------
+" basic options
+" -------------------------------------------------------------------
+set laststatus=2                  " always show the status line
+set cmdheight=2                   " and use a two-line tall status line
+set showcmd                       " show the command
+set noshowmode                    " don't show the mode, vim-airline will do that for us
+set autoindent                    " turns it on
+set smartindent                   " does the right thing (mostly) in programs
+set linespace=3                   " prefer a slight higher line height
+set linebreak                     " wrap intelligently, won't insert hard line breaks
+set wrap                          " use line wrapping
+set textwidth=79                  " at column 79
+set ruler                         " display current cursor position
+set list                          " show invisible characters
+set listchars=tab:▸\ ,eol:¬,trail:⋅,nbsp:␣,extends:❯,precedes:❮
+set showmatch                     " show matching brackets
+if exists("&relativenumber")
+  set relativenumber              " use relative line numbers
+endif
+set number                        " except for the current line - absolute number there
+set backspace=indent,eol,start    " make backspace behave in a sane manner
+set mousehide                     " hide mouse when typing
+set foldenable                    " enable code folding
+set history=1000
+set ffs=unix,mac,dos              " default file types
+set autoread                      " automatically update file when editted outside of vim
 
-" ---------------------------------------------------------------------------------
-" map jj to ESC for quicker escaping
-" ---------------------------------------------------------------------------------
-inoremap jj <ESC>
+" Setup automatic text formatting/wrapping (previously: grn1 )
+set formatoptions=
+set formatoptions-=t              " don't autowrap text
+set formatoptions+=c              " do autowrap comments
+set formatoptions+=r              " automatically continue comments
+set formatoptions+=o              " automatically continue comments when hitting 'o' or 'O'
+set formatoptions+=q              " allow formating of comments with 'gq'
+set formatoptions+=n              " recognize numbered lists
+set formatoptions+=l              " don't break long lines that were already there
 
-" ---------------------------------------------------------------------------------
-" stuff for working with split windows
-" ---------------------------------------------------------------------------------
-nnoremap <leader>w <C-w>v<C-w>l
+" -------------------------------------------------------------------
+" Navigation and movement
+" -------------------------------------------------------------------
+" disable arrow keys
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+
+" use <C>hjkl to switch between splits
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" ---------------------------------------------------------------------------------
-" from vimcasts.org #24
-" automatically source .vimrc when it is saved
-" ---------------------------------------------------------------------------------
+" -------------------------------------------------------------------
+" Move line(s) up or down via C-j and C-k respectively 
+" -------------------------------------------------------------------
+" Normal mode
+nnoremap <C-j> :m .+1<CR>==
+nnoremap <C-k> :m .-2<CR>==
+
+" Insert mode
+inoremap <C-j> <ESC>:m .+1<CR>==gi
+inoremap <C-k> <ESC>:m .-2<CR>==gi
+
+" Visual mode
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
+
+" -------------------------------------------------------------------
+" Encoding anyone?
+" -------------------------------------------------------------------
+set termencoding=utf-8  " we like utf-8
+set encoding=utf-8
+
+" -------------------------------------------------------------------
+" Encryption settings
+" -------------------------------------------------------------------
+set cryptmethod=blowfish " Strong encryption is good
+
+" -------------------------------------------------------------------
+" What to do with files and focus
+" -------------------------------------------------------------------
+set autowrite           " write out old file when switching between files
+set autoread            " reload files changed on disk, i.e. via `git checkout`
+au FocusLost * :wa      " save file when Vim loses focus
+set hidden              " switch beteen buffers without saving
+
+" -------------------------------------------------------------------
+" With Git who needs backup files?
+" -------------------------------------------------------------------
+set nobackup
+set noswapfile
+
+" -------------------------------------------------------------------
+" Set the color scheme
+" -------------------------------------------------------------------
+set background=dark
+" silent! colorscheme Tomorrow-Night
+silent! colorscheme badwolf
+" Make the gutters darker than the background.
+let g:badwolf_darkgutter = 1
+
+" -------------------------------------------------------------------
+" Set tab stuff
+" -------------------------------------------------------------------
+set tabstop=2           " 2 spaces for a tab
+set shiftwidth=2        " 2 spaces for autoindenting
+set softtabstop=2       " when <BS>, pretend a tab is removed even if spaces
+set expandtab           " expand tabs to spaces (overloadable by file type)
+
+" -------------------------------------------------------------------
+" Scrolling
+" -------------------------------------------------------------------
+set scrolloff=5         " show context above/below cursor line
+set sidescrolloff=10    " number of cols from horizontal edge to  start scrolling
+set sidescroll=1        " number of cols to scroll at a time
+
+" -------------------------------------------------------------------
+" Miscellaneous
+" -------------------------------------------------------------------
+" toggle listchars on or off
+noremap <Leader>i :set list!<CR>
+
+" Paste mode to prevent autoindentation of pasted lines
+set pastetoggle=<F2>
+
+" Better pasting from clipboard
+" http://tilvim.com/2014/03/18/a-better-paste.html
+map <Leader>p :set paste<CR>o<esc>"*]p:set nopaste<cr>
+
+set clipboard=unnamed   " yank and paste with the system clipboard
+
+" show cursorline only in active window
 if has("autocmd")
-   autocmd! bufwritepost .vimrc source $MYVIMRC
+  autocmd WinLeave * set nocursorline
+  autocmd WinEnter * set cursorline
 endif
 
-" ---------------------------------------------------------------------------------
-" from vimcasts.org #24
-" shortcut to edit .vimrc file -- opens file in new tab
-" ---------------------------------------------------------------------------------
-nnoremap <leader>v :tabedit $MYVIMRC<CR>
+" Map escape to jj -- much faster to reach and type
+imap jj <esc>
 
-" ---------------------------------------------------------------------------------
-" control whitespace preferences based on filetype, uses autocmd
-" ---------------------------------------------------------------------------------
-if has("autocmd")
-    " enable file type detection
-    filetype on
-
-    " syntax of these languages is fussy over tabs Vs spaces
-    autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
-    autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-
-    " treat .rss files as XML
-    autocmd BufNewFile,BufRead *.rss,*.atom setfiletype xml
-
-    " markdown filetype
-    autocmd BufNewFile,BufRead *.md, *.mkd, *.markdown setfiletype markdown
-    autocmd BufNewFile,BufRead *.md, *.mkd, *.markdown set spell
-
-    " non ruby files related to Ruby
-    autocmd BufNewFile,BufRead Gemfile,Gemfile.lock,Guardfile setfiletype ruby
-
-    autocmd BufNewFile,BufRead Rakefile setfiletype rake
-    autocmd BufNewFile,BufRead Rakefile set syntax=ruby
-
-    autocmd BufNewFile,BufRead *.rake setfiletype rake
-    autocmd BufNewFile,BufRead *.rake set syntax=ruby
-
-    " Python specific settings
-    let NERDTreeIgnore = ['\.pyc$', '\~$', '\.rbc$']
-    autocmd BufNewFile,BufRead *.py set ts=2 sts=2 sw=2 expandtab
-endif
-
-" ---------------------------------------------------------------------------------
-" Define path to Ruby when using rbenv or RVM
-" ---------------------------------------------------------------------------------
-let g:ruby_path = system('rvm current')
-" let g:ruby_path = system ('echo $HOME/.rbenv/shims')
-
-" ---------------------------------------------------------------------------------
-" stuff for bundles
-" ---------------------------------------------------------------------------------
-" NERDTree
-" toggle NERDTRee on or off via F2
-noremap <F2> :NERDTreeToggle<CR>
-let NERDTreeMinimalUI=1
-let NERDTreeDirArrows=1
-" let NERDTreeWinSize=40
-
-" NERDCommenter
-" <leader>c
+" Highlight words to avoid in tech writing
+" =======================================
 "
-" Gundo
-nnoremap <F5> :GundoToggle<CR>
+"   obviously, basically, simply, of course, clearly,
+"   just, everyone knows, However, So, easy
+"
+"   http://css-tricks.com/words-avoid-educational-writing/
+"   https://github.com/pengwynn/dotfiles/commit/12159ea233180344be4e25d57056ccd37061a153
 
-" Powerline
-"let g:Powerline_theme = 'solarized256'
+highlight TechWordsToAvoid ctermbg=red ctermfg=white
+match TechWordsToAvoid /\cobviously\|basically\|simply\|of\scourse\|clearly\|just\|everyone\sknows\|however\|so,\|easy/
+autocmd BufWinEnter * match TechWordsToAvoid /\cobviously\|basically\|simply\|of\scourse\|clearly\|just\|everyone\sknows\|however,\|so,\|easy/
+autocmd InsertEnter * match TechWordsToAvoid /\cobviously\|basically\|simply\|of\scourse\|clearly\|just\|everyone\sknows\|however,\|so,\|easy/
+autocmd InsertLeave * match TechWordsToAvoid /\cobviously\|basically\|simply\|of\scourse\|clearly\|just\|everyone\sknows\|however,\|so,\|easy/
+autocmd BufWinLeave * call clearmatches()
 
-" ---------------------------------------------------------------------------------
+" -------------------------------------------------------------------
+" Searching
+" -------------------------------------------------------------------
+set incsearch           " use incremental search
+set hlsearch            " highlight search results
+set ignorecase          " ignore case when searching
+set smartcase           " ignore case if search string is all lower case, case-sensitve otherwise
+" remove search highlighting with <F3>
+nnoremap <silent> <leader>/ :nohlsearch<CR>
+
+" -------------------------------------------------------------------
+" Preserve function: saves search history and cursor position
+" call with some command, like removing all whitespace
+" -------------------------------------------------------------------
+function! Preserve(command)
+  " preparation: save last search, and cursor position
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+  " do the business
+  execute a:command
+  " clean up: restore previous search history and cursor position
+  let @/=_s
+  call cursor(l,c)
+endfunction
+
+" strip whitespace from all lines in file
+nmap _$ :call Preserve("%s/\\s\\+$//e")<CR>
+
+" reindent entire file
+nmap _= :call Preserve("normal gg=G")<CR>
+
+" -------------------------------------------------------------------
+" Splits
+" -------------------------------------------------------------------
+nnoremap <leader>v <C-w>v<C-w>l   " open a vertical split and switch to it (,v)
+nnoremap <leader>h <C-w>s<C-w>j   " open a horizontal split and switch to it (,h)
+
+" -------------------------------------------------------------------
+" vimrc shortcuts
+" -------------------------------------------------------------------
+" open vimrc in new tab for editing
+nmap <leader>ev :tabedit $MYVIMRC<cr>
+
+" automatically source .vimrc when it is saved (from vimcasts.org #24)
+if has("autocmd")
+  autocmd! bufwritepost .vimrc source $MYVIMRC
+endif
+
+" reload .vimrc
+map <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
+
+" -------------------------------------------------------------------
+" Command line completion
+" -------------------------------------------------------------------
+"set wildmode                 " navigate <left> & <right> through completion lists
+"set wildmode=list:longest    " allows expansion of items
+
+" -------------------------------------------------------------------
+" control whitespace preferences based on filetype
+" -------------------------------------------------------------------
+if has("autocmd")
+  " enable file type detection
+  filetype on
+
+  " prevent Vim from auto-inserting comment on subsequent lines
+  " http://tilvim.com/2013/12/30/remove-comment-prefix-2.html
+  autocmd FileType * setlocal formatoptions-=r formatoptions-=o
+
+  " syntax of these languages is fussy over tabs Vs spaces
+  autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
+  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+  " treat .rss files as XML
+  autocmd BufNewFile,BufRead *.rss,*.atom setfiletype xml
+
+  " spell check Git commit messages
+  autocmd BufRead COMMIT_EDITMSG setlocal spell spelllang=en_us
+
+  " start commit message in insert mode
+  autocmd BufNewFile,BufRead COMMIT_EDITMSG call feedkeys('ggi', 't')
+
+  " markdown files
+  autocmd BufNewFile,BufRead *.md,*.mkd,*.markdown setfiletype markdown
+  autocmd BufNewFile,BufRead *.md,*.mkd,*.markdown set spell spelllang=en_us
+  autocmd FileType markdown setlocal tw=100
+
+  " non ruby files related to Ruby
+  autocmd BufNewFile,BufRead Gemfile,Gemfile.lock,Guardfile setfiletype ruby
+  autocmd BufNewFile,BufRead Thorfile,config.ru,Vagrantfile setfiletype ruby
+  autocmd BufNewFile,BufRead Berksfile,Berksfile.lock setfiletype ruby
+  autocmd BufNewFile,BufRead Rakefile setfiletype rake
+  autocmd BufNewFile,BufRead Rakefile set syntax=ruby
+  autocmd BufNewFile,BufRead *.rake setfiletype rake
+  autocmd BufNEwFile,BufRead *.rake set syntax=ruby
+
+  " Chef uses Ruby, and this will enable the Chef snippets
+  autocmd FileType ruby,eruby set filetype=ruby.eruby.chef
+
+  " Python files
+  let NERDTreeIgnore = ['\.pyc$', '\~$', '\.rbc$']
+  autocmd BufNewFile,BufRead *.py set ts=2 sts=2 sw=2 expandtab
+
+endif
+
+" -------------------------------------------------------------------
+" Stuff for Bundles
+" -------------------------------------------------------------------
+
+" Command-t
+nmap <leader>t :CommandT <CR>
+nmap <leader>T :CommandTFlush<CR>:CommandT<CR>
+
+" vim-airline settings
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:airline#extensions#whitespace#trailing_format = 'trailing[%s]'
+let g:airline#extensions#whitespace#mixed_indent_format = 'mixed-indent[%s]'
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#empty_message = ''
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+let g:airline_theme='dark'
+
+" Vimux settings
+let g:VimuxHeight = "30"
+let g:VimuxOrientation = "v"
+let g:VimuxUseNearestPane = 0
+
+" Vimux Mappings
+nmap <leader>vp :VimuxPromptCommand<cr>
+nmap <leader>vl :VimuxRunLastCommand<cr>
+nmap <leader>vq :VimuxCloseRunner<cr>
+nmap <leader>vx :VimuxInterruptRunner<cr>
+
+" Vimux Octopress helpers
+nmap <leader>vg :call VimuxRunCommand("gen")<CR>
+nmap <leader>vi :call VimuxRunCommand("ingen")<CR>
+nmap <leader>vz :call VimuxRunCommand("dz")<CR>
+nmap <leader>vd :call VimuxRunCommand("deploy")<CR>
+
+" MiniBufExpl setup
+" let g:miniBufExplMapWindowNavVim = 1 
+" let g:miniBufExplMapWindowNavArrows = 1 
+" let g:miniBufExplMapCTabSwitchBufs = 1 
+" let g:miniBufExplModSelTarget = 1 
+
+" MiniBufExpl Colors
+" hi MBENormal               ctermfg=244 ctermbg=235
+" hi MBEChanged              ctermfg=166 ctermbg=235
+" hi MBEVisibleNormal        ctermfg=147 ctermbg=235
+" hi MBEVisibleChanged       ctermfg=164 ctermbg=235
+" hi MBEVisibleActiveNormal  ctermfg=229 ctermbg=235
+" hi MBEVisibleActiveChanged ctermfg=203 ctermbg=235
+
+" Control-P
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+" -------------------------------------------------------------------
 "  finis
-" ---------------------------------------------------------------------------------
+" -------------------------------------------------------------------

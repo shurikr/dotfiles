@@ -3,6 +3,8 @@
 # -------------------------------------------------------------------
 #alias foobar='nocorrect foobar'
 alias g8='nocorrect g8'
+alias cookbook='nocorrect cookbook'
+alias sudo='nocorrect sudo'
 
 # -------------------------------------------------------------------
 # Ruby stuff
@@ -19,7 +21,12 @@ alias rake="noglob rake" # necessary to make rake work inside of zsh
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+alias .....='cd ../../../..'
 alias 'bk=cd $OLDPWD'
+
+# directory shortcuts
+alias projects='~/Projects/'
+alias github='~/Projects/github/'
 
 # -------------------------------------------------------------------
 # directory information
@@ -38,8 +45,11 @@ if [[ $IS_LINUX -eq 1 ]]; then
     alias ls='ls -GFh --color' # Colorize output, add file type indicator, and put sizes in human readable format
     alias ll='ls -GFhl --color' # Same as above, but in long listing format
 fi
+
+alias lsd="ls -ld *" # show directories
 alias tree="ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
-alias 'dus=du -sckx * | sort -nr' #directories sorted by size
+alias 'dirdus=du -sckx * | sort -nr' #directories sorted by size
+alias 'dus=du -kx | sort -nr | less' #files sorted by size
 
 alias 'wordy=wc -w * | sort | tail -n10' # sort files in current directory by the number of words they contain
 alias 'filecount=find . -type f | wc -l' # number of files (not directories)
@@ -71,16 +81,46 @@ if [[ $IS_MAC -eq 1 ]]; then
     alias defhist='history 1 | grep "defaults"'
 fi
 
+# The Venerable Mutt
+alias mutt 'cd ~/Desktop && mutt'
+
+# -------------------------------------------------------------------
+# random shortcuts
+# -------------------------------------------------------------------
+#alias s='subl -n .'
+alias p='cd ~/Projects'
+alias v='vim'
+alias bu='brew update; brew upgrade; brew cleanup; brew doctor'
+alias wifi="networksetup -setairportpower en0"
+alias makepass="openssl rand -base64 12"
 
 # -------------------------------------------------------------------
 # remote machines
 # -------------------------------------------------------------------
+alias 'vpn=sudo openconnect --config ~/.openconnect https://vpn.net.k-state.edu'
 alias 'palantir=ssh mhn@palantir.ome.ksu.edu -p 11122'
 alias 'pvnc=open vnc://palantir.ome.ksu.edu'
 alias 'ksunix=ssh mhn@unix.ksu.edu'
 alias 'veld=ssh mhn@veld.ome.ksu.edu'
 alias 'dev=ssh mhn@ome-dev-as1.ome.campus'
+alias 'tools=ssh mhn@tools.ome.ksu.edu'
 alias 'wf=ssh markn@markn.webfactional.com'
+alias 'chef=ssh mark@129.130.49.121'
+
+# ------------------------------------------------------------------
+# tmux stuff
+# ------------------------------------------------------------------
+alias takeover="tmux detach -a"
+alias attach="tmux attach -t base || tmux new -s base"
+alias ta='tmux attach -t' 
+alias tn='tmux new -s' 
+alias tls='tmux ls'
+alias tk='tmux kill-session -t'
+
+# -------------------------------------------------------------------
+# Mutt stuff
+# -------------------------------------------------------------------
+alias mutt 'cd ~/Desktop && mutt'
 
 # -------------------------------------------------------------------
 # database
@@ -108,7 +148,17 @@ alias 'vu=vagrant up'
 alias 'vp=vagrant provision'
 alias 'vh=vagrant halt'
 alias 'vr=vagrant reload'
+alias 'vd=vagrant destroy'
 
+# ------------------------------------------------------------------
+# Knife
+# ------------------------------------------------------------------
+alias 'kso=knife status "hostname:ome*"'
+alias 'ks=knife status'
+alias 'kn=knife node'
+alias 'kc=knife client'
+alias 'tagged=knife search node "name:ome-vm*" -a tags'
+alias 'notags=knife search node "NOT tags:* AND name:ome*" -a tags'
 
 # -------------------------------------------------------------------
 # Mercurial (hg)
@@ -191,6 +241,9 @@ alias 'htaccess=scp /Users/mark/Projects/octopress/zanshin/source/htaccess/.htac
 
 # deploy zanshin.net and move its .htaccess files
 alias 'dz=deploy ; htaccess ;'
+
+# Just for fun
+alias please='sudo !!'
 
 # -------------------------------------------------------------------
 # Source: http://aur.archlinux.org/packages/lolbash/lolbash/lolbash.sh

@@ -31,12 +31,12 @@ setopt complete_in_word # Allow completion from within a word/phrase
 unsetopt menu_complete # do not autoselect the first completion entry
 
 # ===== Correction
+unsetopt correct_all # spelling correction for arguments
 setopt correct # spelling correction for commands
-setopt correctall # spelling correction for arguments
 
 # ===== Prompt
 setopt prompt_subst # Enable parameter expansion, command substitution, and arithmetic expansion in the prompt
-setopt transient_rprompt # only show the rprompt on the current prompt
+# setopt transient_rprompt # only show the rprompt on the current prompt
 
 # ===== Scripts and Functions
 setopt multios # perform implicit tees or cats when multiple redirections are attempted

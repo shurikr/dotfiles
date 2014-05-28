@@ -1,4 +1,25 @@
+# -------------------------------------------------------------------
+# Chef functions
+# -------------------------------------------------------------------
+function knhost() {
+  sed -e 's/.*://' -e 's/.*items found//'
+}
 
+function knaws() {
+  knife search node "tags:$*" -a cloud.public_hostname | knhost
+}
+
+# -------------------------------------------------------------------
+# Dash functions
+# -------------------------------------------------------------------
+# Open argument in Dash
+function dash() {
+  open "dash://$*"
+}
+
+function dman() {
+  open "dash://man:$*"
+}
 
 # -------------------------------------------------------------------
 # compressed file expander
@@ -220,4 +241,11 @@ givedef() {
   fi
 }
 
+# --------------------------------------------------------------------
+# ps with a grep
+# from http://hiltmon.com/blog/2013/07/30/quick-process-search/
+# --------------------------------------------------------------------
+function psax() {
+  ps auxwwwh | grep "$@" | grep -v grep
+}
 
