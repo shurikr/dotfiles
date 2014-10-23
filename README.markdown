@@ -33,6 +33,8 @@ On those Mac OS machines where I install Homebrew I also edit `/etc/paths` to mo
     /bin
     /usr/sbin
     /sbin
+
+The `~/.dotfiles/brew/Brewfile` acts as a bundle for Homebrew. Use `brew bundle ~/.dotfiles/brew/Brewfile` to set up brews.
     
 ## zsh
 For zsh configuration create the following symlinks:
@@ -106,6 +108,14 @@ For tmux configuration create this symlink:
 
     $ ln -s ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
 
+Setup `tmuxinator` by installing it's gem
+
+    $ gem install tmuxinator
+
+And link in the directory containing the YML files for the `mux` command.
+
+    $ ln -s ~/.dotfiles/tmux/tmuxinator ~/.tmuxinator
+
 ## Sublime Text 2 (subl)
 Install Package Control following the instructions here: http://wbond.net/sublime_packages/package_control
 
@@ -133,6 +143,14 @@ Install `doing` gem (https://github.com/ttscoff/doing/ & http://brettterpstra.co
 Create symlink to `doingrc` file.
 
     $ ln -s ~/.dotfiles/doing/doingrc ~/.doingrc
+
+## OpenConnect
+An alternative to using Cisco's AnyConnect.
+
+Requires that `openconnect` be installed via Homebrew and that TUN/TAP for OS X be installed. See http://zanshin.net/2013/08/27/setup-openconnect-for-mac-os-x-lion/
+for details.
+
+    $ ln -s ~/.dotfiles/openconnect/openconnect ~/.openconnect
 
 
 

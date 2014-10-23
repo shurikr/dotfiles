@@ -3,65 +3,76 @@
 #Host *.webfactional.com
 #RemoteForward 52698 127.0.0.1:52698
 
+
 # OME system admin
 host tx1
     HostName ome-txhub1.cc.ksu.edu
-    User mhn
 
 host tx2
     HostName ome-txhub2.cc.ksu.edu
-    User mhn
 
 host veld
     HostName veld.ome.ksu.edu
-    User mhn
 
 host dev
     HostName ome-dev-as1.ome.campus
-    User mhn
 
 host tools
     HostName ome-tools1.campus.ksu.edu
-    User mhn
 
 host txdev1
     HostName ome-dev-txhub1.cc.ksu.edu
-    User mhn
 
 host txdev2
     HostName ome-dev-txhub2.cc.ksu.edu
-    User mhn
+
+host web1
+    HostName ome-web1.campus.ksu.edu
 
 host web2
     HostName ome-web2.campus.ksu.edu
-    User mhn
 
 host web3
     HostName ome-web3.campus.ksu.edu
-    User mhn
 
 host web4
     HostName ome-web4.campus.ksu.edu
-    User mhn
 
 host trebor
     HostName trebor.ome.ksu.edu
-    User mhn
 
 host mon1
     HostName ome-mon1.campus.ksu.edu
-    User mhn
 
 # WebTeam Fabric
+#Host ec2*compute-1.amazonaws.com
+#    StrictHostKeyChecking no
+#    User fabric
+#    IdentityFile  /Users/mhn/.ssh/id_fabric
 Host ec2*compute-1.amazonaws.com
     StrictHostKeyChecking no
-    User fabric
-    IdentityFile  /Users/mhn/.ssh/id_fabric
+    User ubuntu
+    IdentityFile /Users/mhn/.ssh/asakey.pem
+
+#host aws_prod1
+#    HostName ec2-23-21-38-28.compute-1.amazonaws.com
+#    StrictHostKeyChecking no
+#    User mhn
+#    IdentityFile /Users/mhn/.ssh/mhn.pem
+
+#host web_prod1
+#    HostName ec2-23-21-38-28.compute-1.amazonaws.com
+#    User ubuntu
+#    IdentityFile ~/.ssh/asakey.pem
+
+#host web_prod2
+#    HostName ec2-50-16-61-249.compute-1.amazonaws.com
+#    User ubuntu
+#    IdentityFile ~/.ssh/asakey.pem
 
 # Personal K-State Webpage
 host ksuunix
     HostName unix.ksu.edu
-    User mhn
 
 # OME local VMs
 host devvm
@@ -79,14 +90,14 @@ host wf
     HostName markn.webfactional.com
     User markn
 
-# iMac desktop
-host palantir
-    HostName palantir.ome.ksu.edu
+host krayt
+    HostName krayt.ome.ksu.edu
     Port 11122
-    User mhn
 
 # Mac Pro xendor
 host xendor
     HostName xendor.ome.ksu.edu
     user mark
 
+host *
+    User mhn
