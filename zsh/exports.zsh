@@ -38,8 +38,19 @@ export LC_CTYPE=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Virtual Environment Stuff
+# Location of your virtualenv files
 export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/Projects/django
+# Location of your project working directories
+export PROJECT_HOME=$HOME/labs/python
+# Centralized location for new virtual environments
+export PIP_VIRTUALENV_BASE=$WORKON_HOME
+# pip should only run if there is a virtualenv currently activated
+export PIP_REQUIRE_VIRTUALENV=true
+# cache pip-installed packages to avoid re-downloading
+export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
+# pass default argument to skip using computer wide packages
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
 if [[ $HAS_VIRTUALENV -eq 1 ]]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi

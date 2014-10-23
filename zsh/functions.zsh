@@ -249,3 +249,6 @@ function psax() {
   ps auxwwwh | grep "$@" | grep -v grep
 }
 
+syspip(){
+   PIP_REQUIRE_VIRTUALENV="" pip "$@"
+}
